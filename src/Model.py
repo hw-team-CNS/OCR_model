@@ -16,12 +16,6 @@ from pydrive.drive import GoogleDrive
 from google.colab import auth
 from oauth2client.client import GoogleCredentials
 
-# Authenticate and create the PyDrive client.
-# This only needs to be done once in a notebook.
-auth.authenticate_user()
-gauth = GoogleAuth()
-gauth.credentials = GoogleCredentials.get_application_default()
-drive = GoogleDrive(gauth)
 
 def ln(tensor, scope=None, epsilon=1e-5):
 	##Layer normalizes a 2D tensor along its second axis
@@ -520,6 +514,13 @@ class Model:
 		self.snapID += 1
 		self.saver.save(self.sess, '../model/snapshot', global_step=self.snapID)
 
+		# Authenticate and create the PyDrive client.
+		# This only needs to be done once in a notebook.
+		auth.authenticate_user()
+		gauth = GoogleAuth()
+		gauth.credentials = GoogleCredentials.get_application_default()
+		drive = GoogleDrive(gauth)
+
 		print("Deleting old snap")
 		for old_file in os.listdir('/content/drive/My Drive/'):
 			if 'checkpoint' == old_file or 'snap' in old_file:
@@ -527,7 +528,7 @@ class Model:
 
 		print("Deleted old snap. Uploading new snap")
 
-		for file in os.listdir('/content/SimpleHTR/model'):
+		for file in os.listdir(r'/content/SimpleHTR/model'):
 			if 'checkpoint' == file or 'snap' in file:
 				uploaded = drive.CreateFile({'title': file})
 				uploaded.SetContentFile(r'/content/SimpleHTR/model/' + file)
