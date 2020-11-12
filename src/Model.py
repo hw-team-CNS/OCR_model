@@ -520,16 +520,17 @@ class Model:
 		gauth = GoogleAuth()
 		gauth.credentials = GoogleCredentials.get_application_default()
 		drive = GoogleDrive(gauth)
-
 		print("Deleting old snap")
+
 		for old_file in os.listdir('/content/drive/My Drive/'):
-			if 'checkpoint' == old_file or 'snap' in old_file:
+			if ('checkpoint' == old_file or 'snap' in old_file or
+				'accuracy' in old_file):
 				os.remove('/content/drive/My Drive/' + old_file)
 
 		print("Deleted old snap. Uploading new snap")
 
 		for file in os.listdir(r'/content/SimpleHTR/model'):
-			if 'checkpoint' == file or 'snap' in file:
+			if 'checkpoint' == file or 'snap' in file or 'accuracy' in file:
 				uploaded = drive.CreateFile({'title': file})
 				uploaded.SetContentFile(r'/content/SimpleHTR/model/' + file)
 				uploaded.Upload()
