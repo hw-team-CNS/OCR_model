@@ -511,6 +511,13 @@ class Model:
 
 	def save(self):
 
+		print(r"Deleting old snap in model/ dir")
+
+		for old_file in os.listdir(r'/content/SimpleHTR/model'):
+			if ('checkpoint' == old_file or 'snap' in old_file or
+				'accuracy' in old_file):
+				os.remove(r'/content/SimpleHTR/model' + old_file)
+
 		self.snapID += 1
 		self.saver.save(self.sess, '../model/snapshot', global_step=self.snapID)
 
