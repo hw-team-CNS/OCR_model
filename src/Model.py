@@ -8,13 +8,6 @@ import os
 from tensorflow.contrib.rnn import RNNCell, LSTMStateTuple
 from tensorflow.contrib.rnn.python.ops.core_rnn_cell import _linear
 from tensorflow.python.ops.rnn import dynamic_rnn
-from google.colab import files
-
-# authenticate drive
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
-from google.colab import auth
-from oauth2client.client import GoogleCredentials
 
 
 def ln(tensor, scope=None, epsilon=1e-5):
@@ -356,9 +349,10 @@ class Model:
 			print(word_beam_search_module)
 			# prepare information about language (dictionary, characters in dataset, characters forming words) 
 			chars = str().join(self.charList)
-			wordChars = open('../model/charList.txt').read().splitlines()[0]
+			### These things not required!############ as we don't use wordbeamsearch#######
+			wordChars = open('../model/wordCharList.txt').read().splitlines()[0]
 			corpus = open('../data/corpus.txt').read()
-
+			##########
 			print(dir(word_beam_search_module))
 
 			# decode using the "Words" mode of word beam search
@@ -511,34 +505,5 @@ class Model:
 
 	def save(self):
 
-		print(r"Deleting old snap in model/ dir")
-
-		for old_file in os.listdir(r'/content/SimpleHTR/model'):
-			if ('checkpoint' == old_file or 'snap' in old_file or
-				'accuracy' in old_file):
-				os.remove(r'/content/SimpleHTR/model' + old_file)
-
 		self.snapID += 1
 		self.saver.save(self.sess, '../model/snapshot', global_step=self.snapID)
-
-		# Authenticate and create the PyDrive client.
-		# This only needs to be done once in a notebook.
-		auth.authenticate_user()
-		gauth = GoogleAuth()
-		gauth.credentials = GoogleCredentials.get_application_default()
-		drive = GoogleDrive(gauth)
-		print("Deleting old snap")
-
-		for old_file in os.listdir('/content/drive/My Drive/'):
-			if ('checkpoint' == old_file or 'snap' in old_file or
-				'accuracy' in old_file):
-				os.remove('/content/drive/My Drive/' + old_file)
-
-		print("Deleted old snap. Uploading new snap")
-
-		for file in os.listdir(r'/content/SimpleHTR/model'):
-			if 'checkpoint' == file or 'snap' in file or 'accuracy' in file:
-				uploaded = drive.CreateFile({'title': file})
-				uploaded.SetContentFile(r'/content/SimpleHTR/model/' + file)
-				uploaded.Upload()
-				print('Uploaded file with ID {}'.format(uploaded.get('id')))
