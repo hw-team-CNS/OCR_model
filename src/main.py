@@ -36,7 +36,7 @@ def train(model, loader):
 			iterInfo = loader.getIteratorInfo()
 			batch = loader.getNext()
 			loss = model.trainBatch(batch)
-			print('Batch:', iterInfo[0],'/', iterInfo[1], 'Loss:', loss)
+			#print('Batch:', iterInfo[0],'/', iterInfo[1], 'Loss:', loss)
 
 		# validate
 		charErrorRate = validate(model, loader)
